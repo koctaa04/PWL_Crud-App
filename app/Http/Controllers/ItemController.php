@@ -34,7 +34,7 @@ class ItemController extends Controller
             'description' => 'required',
         ]);
 
-        // Item::create($request->all());
+        Item::create($request->all());
         // return redirect()->route('items.index');
 
         // Hanya Masukkan Atribut yang diizinkan
@@ -46,6 +46,7 @@ class ItemController extends Controller
      */
     public function show(string $id)
     {
+        $item = Item::findOrFail($id);
         return view('items.show', compact('item'));
     }
 
@@ -54,20 +55,23 @@ class ItemController extends Controller
      */
     public function edit(string $id)
     {
+        $item = Item::findOrFail($id);
         return view('items.edit', compact('item'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Item $item)
+    public function update(Request $request, string $id)
     {
         $request->validate([
             'name' => 'required',
             'description' => 'required',
         ]);
 
-        // $item->update($request->all());
+        $item = Item::findOrFail($id);
+        
+        $item->update($request->all());
         // return redirect()->route('items.index');
         // Hanya Masukkan Atribut yang diizinkan
         $item->update($request->only(['name', 'description']));
@@ -77,8 +81,9 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Item $item)
+    public function destroy(string $id)
     {
+        $item = Item::findOrFail($id);
         $item->delete();
         return redirect()->route('items.index')->with('success', 'Item deleted successfully.');
     }
